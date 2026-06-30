@@ -2,7 +2,9 @@
 
 Dark-mode, interactive storm tracking dashboard for the Phoenix Valley, built for Johnson Roofing's website. Free/no-key data sources only (NWS + Open-Meteo + Windy embed).
 
-## Status: Step 3 of 3 in progress — Deployment (GitHub done, Vercel pending)
+## Status: Completed for now (2026-06-30) — GitHub live, Vercel connect still pending
+
+See `(C) Storm Tracker Dashboard - Project Notes.md` for full project notes, decisions, and to-dos.
 
 ## Steps
 - [x] **Step 1 — Layout/Wireframe** (2026-06-30): Static dark-mode wireframe built with placeholder data. Navy/gold base palette (matches Insurance Navigator page) + amber/orange/red storm-severity accents. Layout: header → alert ribbon → 3-col (Live Conditions / Radar / Active Alerts) → 2-col (Hail-Rain Estimator / 7-Day Forecast) → footer. Fully responsive (stacks on mobile).
