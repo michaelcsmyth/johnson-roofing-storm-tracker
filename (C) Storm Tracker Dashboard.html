@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storm Tracker — Johnson Roofing | Phoenix Valley</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand base — matches Insurance Navigator / Financing Page navy+gold system */
+    --navy:         #0d1b2a;
+    --navy-dark:    #0a141f;
+    --panel:        #131c28;
+    --panel-light:  #1a2433;
+    --border:       #2a3545;
+    --gold:         #c8973a;
+    --gold-hover:   #b07d28;
+    --white:        #ffffff;
+    --text-muted:   #8a9aaa;
+    --text-dim:     #5c6b7d;
+
+    /* Storm severity accents */
+    --amber:        #ffb300;  /* watch */
+    --orange:       #ff6b35;  /* warning */
+    --red:          #e63946;  /* severe / extreme */
+    --green:        #27ae60;  /* all-clear */
+
+    --font-display: 'Oswald', sans-serif;
+    --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    --radius-sm:    8px;
+    --radius-md:    14px;
+    --radius-lg:    20px;
+    --shadow-md:    0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(200,151,58,0.07) 0%, transparent 40%),
+      radial-gradient(circle at 85% 10%, rgba(230,57,70,0.05) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+
+  a { color: var(--gold); text-decoration: none; }
+
+  /* ===== HEADER ===== */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+  .header-brand .logo-mark {
+    width: 42px; height: 42px;
+    background: var(--gold);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 18px;
+  }
+  .header-brand h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: 0.3px;
+  }
+  .header-brand h1 span { color: var(--gold); }
+  .header-brand .subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .header-status { display: flex; align-items: center; gap: 24px; }
+  .live-clock { font-family: var(--font-display); font-size: 14px; color: var(--text-muted); }
+  .refresh-indicator {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-muted);
+  }
+  .pulse-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(39,174,96,0.6);
+    animation: pulse 2s infinite;
+  }
+  .pulse-dot.error { background: var(--red); animation: none; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(39,174,96,0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(39,174,96,0); }
+    100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
+  }
+
+  /* ===== ALERT RIBBON ===== */
+  .alert-ribbon {
+    background: linear-gradient(90deg, var(--red), #c0392b);
+    color: var(--white);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    box-shadow: var(--shadow-md);
+  }
+  .alert-ribbon.watch { background: linear-gradient(90deg, var(--amber), #c98700); color: var(--navy); }
+  .alert-ribbon.watch .badge { color: var(--navy); }
+  .alert-ribbon.warning { background: linear-gradient(90deg, var(--orange), #cc4e1f); }
+  .alert-ribbon[hidden] { display: none; }
+  .alert-ribbon .badge {
+    background: rgba(255,255,255,0.18);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .alert-ribbon .ribbon-text { flex: 1; }
+  .alert-ribbon .ribbon-link {
+    color: inherit;
+    text-decoration: underline;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  /* ===== LAYOUT ===== */
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 32px 60px;
+  }
+
+  .grid-3col {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .card-header h2 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--white);
+  }
+  .card-header .source-tag {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== CONDITIONS CARD ===== */
+  .condition-primary {
+    text-align: center;
+    padding: 10px 0 18px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .condition-primary .temp {
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .condition-primary .desc { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
+
+  .condition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .stat-block { background: var(--panel-light); border-radius: var(--radius-sm); padding: 12px; }
+  .stat-block .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); }
+  .stat-block .value { font-family: var(--font-display); font-size: 20px; font-weight: 500; margin-top: 4px; }
+  .stat-block .value.wind-gust { color: var(--orange); }
+
+  .wind-compass {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--panel-light);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+  }
+  .compass-ring {
+    width: 70px; height: 70px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .compass-arrow {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 2px; height: 28px;
+    background: var(--gold);
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%) rotate(0deg);
+    transition: transform 0.4s ease;
+  }
+  .compass-arrow::after {
+    content: '';
+    position: absolute;
+    top: -4px; left: 50%;
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 7px solid var(--gold);
+    transform: translateX(-50%);
+  }
+  .compass-labels { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .compass-labels strong { color: var(--white); font-family: var(--font-display); }
+
+  /* ===== RADAR/MAP CARD ===== */
+  .radar-frame {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--panel-light);
+  }
+  .radar-frame iframe { width: 100%; height: 100%; border: 0; }
+
+  .radar-legend {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 14px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .radar-legend span { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+
+  /* ===== ALERTS FEED ===== */
+  .alerts-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .alert-item {
+    background: var(--panel-light);
+    border-left: 3px solid var(--amber);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .alert-item.warning { border-left-color: var(--orange); }
+  .alert-item.severe { border-left-color: var(--red); }
+  .alert-item .alert-type {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .alert-item.watch .alert-type { color: var(--amber); }
+  .alert-item.warning .alert-type { color: var(--orange); }
+  .alert-item.severe .alert-type { color: var(--red); }
+  .alert-item .alert-area { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .alert-item .alert-time { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .alerts-feed .empty-state {
+    text-align: center;
+    padding: 30px 10px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  /* ===== HAIL/RAIN ESTIMATOR ===== */
+  .estimator-row { display: flex; flex-direction: column; gap: 16px; }
+  .estimator-note { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+  .gauge-block { display: flex; align-items: center; gap: 16px; }
+  .gauge-label { width: 100px; font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+  .gauge-track {
+    flex: 1;
+    height: 10px;
+    background: var(--panel-light);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .gauge-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--green), var(--amber), var(--orange), var(--red));
+    width: 0%;
+    transition: width 0.6s ease;
+  }
+  .gauge-value { width: 60px; text-align: right; font-family: var(--font-display); font-size: 14px; color: var(--white); flex-shrink: 0; }
+
+  /* ===== FORECAST STRIP ===== */
+  .forecast-strip {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+  }
+  .forecast-day {
+    background: var(--panel-light);
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .forecast-day .day-name { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+  .forecast-day .day-icon { font-size: 20px; margin: 8px 0; }
+  .forecast-day .day-hi { font-family: var(--font-display); font-size: 15px; color: var(--white); }
+  .forecast-day .day-lo { font-size: 12px; color: var(--text-dim); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  footer .footer-sources span { margin-right: 16px; }
+  footer .footer-contact a { color: var(--gold); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1100px) {
+    .grid-3col { grid-template-columns: 1fr; }
+    .grid-2col { grid-template-columns: 1fr; }
+    .forecast-strip { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 600px) {
+    header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .header-status { width: 100%; justify-content: space-between; }
+    main { padding: 20px 16px 40px; }
+    .forecast-strip { grid-template-columns: repeat(3, 1fr); }
+    .alert-ribbon { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="header-brand">
+      <div class="logo-mark">JR</div>
+      <div>
+        <h1>Johnson Roofing <span>Storm Tracker</span></h1>
+        <div class="subtitle">Phoenix Valley — Maricopa County, AZ</div>
+      </div>
+    </div>
+    <div class="header-status">
+      <div class="live-clock" id="liveClock">--:-- --</div>
+      <div class="refresh-indicator">
+        <span class="pulse-dot" id="pulseDot"></span>
+        <span>Live — updated <span id="lastUpdated">just now</span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Alert ribbon: shown/hidden and color-coded by JS based on the highest-severity active NWS alert -->
+  <div class="alert-ribbon" id="alertRibbon" hidden>
+    <span class="badge" id="ribbonBadge"></span>
+    <span class="ribbon-text" id="ribbonText"></span>
+    <a href="https://www.weather.gov/psr/" target="_blank" rel="noopener" class="ribbon-link">View on NWS &rarr;</a>
+  </div>
+
+  <main>
+
+    <div class="grid-3col">
+
+      <!-- LIVE CONDITIONS -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Live Conditions</h2>
+          <span class="source-tag">NWS Station KPHX</span>
+        </div>
+        <div class="condition-primary">
+          <div class="temp" id="condTemp">--&deg;</div>
+          <div class="desc" id="condDesc">Loading conditions&hellip;</div>
+        </div>
+        <div class="condition-grid">
+          <div class="stat-block">
+            <div class="label">Wind Speed</div>
+            <div class="value" id="condWind">-- mph</div>
+          </div>
+          <div class="stat-block">
+            <div class="label">Gusts</div>
+            <div class="value wind-gust" id="condGust">-- mph</div>
+          </div>
+          <div class="stat-block">
+            <div class="label">Precip (1hr)</div>
+            <div class="value" id="condPrecip">-- in</div>
+          </div>
+          <div class="stat-block">
+            <div class="label">Humidity</div>
+            <div class="value" id="condHumidity">--%</div>
+          </div>
+        </div>
+        <div class="wind-compass">
+          <div class="compass-ring"><div class="compass-arrow" id="compassArrow"></div></div>
+          <div class="compass-labels">
+            <strong id="compassDir">--</strong> @ <span id="compassSpeed">--</span> mph<br>
+            Direction: <span id="compassDeg">--</span>&deg;<br>
+            Source: NWS Station KPHX
+          </div>
+        </div>
+      </div>
+
+      <!-- RADAR / MAP -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Interactive Radar</h2>
+          <span class="source-tag">Windy Embed</span>
+        </div>
+        <div class="radar-frame">
+          <iframe
+            src="https://embed.windy.com/embed2.html?lat=33.4484&lon=-112.0740&detailLat=33.4484&detailLon=-112.0740&width=650&height=450&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1"
+            loading="lazy"
+            title="Windy radar — Phoenix, AZ">
+          </iframe>
+        </div>
+        <div class="radar-legend">
+          <span><i class="legend-dot" style="background:var(--green)"></i> Light</span>
+          <span><i class="legend-dot" style="background:var(--amber)"></i> Moderate</span>
+          <span><i class="legend-dot" style="background:var(--orange)"></i> Heavy</span>
+          <span><i class="legend-dot" style="background:var(--red)"></i> Severe</span>
+        </div>
+      </div>
+
+      <!-- ALERTS FEED -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Active Alerts</h2>
+          <span class="source-tag">NWS Zone AZC013</span>
+        </div>
+        <div class="alerts-feed" id="alertsFeed">
+          <div class="empty-state">Loading alerts&hellip;</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="grid-2col">
+
+      <!-- HAIL / RAINFALL ESTIMATOR -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Hail &amp; Rainfall Estimator</h2>
+          <span class="source-tag">NWS Derived</span>
+        </div>
+        <div class="estimator-row">
+          <div class="gauge-block">
+            <div class="gauge-label">Hail Risk</div>
+            <div class="gauge-track"><div class="gauge-fill" id="gaugeHail" style="width:0%"></div></div>
+            <div class="gauge-value" id="gaugeHailLabel">--</div>
+          </div>
+          <div class="gauge-block">
+            <div class="gauge-label">Rainfall Rate</div>
+            <div class="gauge-track"><div class="gauge-fill" id="gaugeRain" style="width:0%"></div></div>
+            <div class="gauge-value" id="gaugeRainLabel">--</div>
+          </div>
+          <div class="gauge-block">
+            <div class="gauge-label">Wind Damage</div>
+            <div class="gauge-track"><div class="gauge-fill" id="gaugeWind" style="width:0%"></div></div>
+            <div class="gauge-value" id="gaugeWindLabel">--</div>
+          </div>
+        </div>
+        <div class="estimator-note">Estimate derived from active NWS alerts and live wind/precip readings — not an official NWS product.</div>
+      </div>
+
+      <!-- 7-DAY FORECAST -->
+      <div class="card">
+        <div class="card-header">
+          <h2>7-Day Forecast</h2>
+          <span class="source-tag">Open-Meteo</span>
+        </div>
+        <div class="forecast-strip" id="forecastStrip">
+          <div class="forecast-day"><div class="day-name">&nbsp;</div><div class="day-icon">&hellip;</div><div class="day-hi">--&deg;</div><div class="day-lo">--&deg;</div></div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-sources">
+      <span>Data: National Weather Service (NWS)</span>
+      <span>Open-Meteo</span>
+      <span>Windy Radar</span>
+    </div>
+    <div class="footer-contact">
+      Johnson Roofing &bull; 480-467-4572 &bull; <a href="https://johnsonroofingaz.com">johnsonroofingaz.com</a>
+    </div>
+  </footer>
+
+  <script>
+    /* ===========================================================
+       Storm Tracker — Live Data Layer
+       Phoenix, AZ (33.4484, -112.0740) — Maricopa County (AZC013)
+       All sources are free / unauthenticated:
+         - NWS API   : https://api.weather.gov  (no key)
+         - Open-Meteo: https://api.open-meteo.com (no key)
+         - Windy     : free embed iframe (no key)
+       =========================================================== */
+
+    const LAT = 33.4484;
+    const LON = -112.0740;
+    const NWS_STATION = 'KPHX';
+    const NWS_ZONE = 'AZC013';
+
+    const $ = (id) => document.getElementById(id);
+
+    // ---------- Live clock ----------
+    function updateClock() {
+      const now = new Date();
+      const opts = { hour: '2-digit', minute: '2-digit', timeZone: 'America/Phoenix' };
+      $('liveClock').textContent = now.toLocaleTimeString('en-US', opts) + ' MST';
+    }
+    updateClock();
+    setInterval(updateClock, 1000 * 30);
+
+    function markUpdated(ok) {
+      $('lastUpdated').textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Phoenix' });
+      $('pulseDot').classList.toggle('error', !ok);
+    }
+
+    // ---------- Helpers ----------
+    function cToF(c) { return c == null ? null : Math.round((c * 9 / 5) + 32); }
+    function kmhToMph(k) { return k == null ? null : Math.round(k * 0.621371); }
+    function mmToIn(mm) { return mm == null ? null : (mm * 0.0393701); }
+
+    function degToCompass(deg) {
+      if (deg == null) return '--';
+      const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+      return dirs[Math.round(deg / 22.5) % 16];
+    }
+
+    // WMO weather codes (Open-Meteo) -> icon + label
+    const WMO = {
+      0:  ['&#9728;', 'Clear'],
+      1:  ['&#9728;', 'Mostly Clear'],
+      2:  ['&#9925;', 'Partly Cloudy'],
+      3:  ['&#9729;', 'Overcast'],
+      45: ['&#9729;', 'Fog'],
+      48: ['&#9729;', 'Fog'],
+      51: ['&#127783;', 'Light Drizzle'],
+      53: ['&#127783;', 'Drizzle'],
+      55: ['&#127783;', 'Heavy Drizzle'],
+      61: ['&#127783;', 'Light Rain'],
+      63: ['&#127783;', 'Rain'],
+      65: ['&#127783;', 'Heavy Rain'],
+      71: ['&#10052;', 'Light Snow'],
+      73: ['&#10052;', 'Snow'],
+      75: ['&#10052;', 'Heavy Snow'],
+      80: ['&#127783;', 'Rain Showers'],
+      81: ['&#127783;', 'Rain Showers'],
+      82: ['&#127783;', 'Violent Showers'],
+      95: ['&#9928;', 'Thunderstorm'],
+      96: ['&#9928;', 'Storm w/ Hail'],
+      99: ['&#9928;', 'Severe Storm w/ Hail']
+    };
+
+    let latestAlerts = [];
+    let latestConditions = {};
+
+    // ---------- NWS: Current conditions ----------
+    async function fetchConditions() {
+      try {
+        const res = await fetch(`https://api.weather.gov/stations/${NWS_STATION}/observations/latest`, {
+          headers: { 'Accept': 'application/geo+json' }
+        });
+        if (!res.ok) throw new Error('NWS observation fetch failed: ' + res.status);
+        const data = await res.json();
+        const p = data.properties;
+
+        const tempF = cToF(p.temperature?.value);
+        const heatIndexF = cToF(p.heatIndex?.value) ?? tempF;
+        const windMph = kmhToMph(p.windSpeed?.value);
+        const gustMph = kmhToMph(p.windGust?.value);
+        const windDeg = p.windDirection?.value;
+        const precipIn = mmToIn(p.precipitationLastHour?.value);
+        const humidity = p.relativeHumidity?.value != null ? Math.round(p.relativeHumidity.value) : null;
+        const desc = p.textDescription || '—';
+
+        latestConditions = { tempF, windMph, gustMph, windDeg, precipIn, humidity };
+
+        $('condTemp').innerHTML = (tempF != null ? tempF : '--') + '&deg;';
+        $('condDesc').textContent = desc + (heatIndexF != null && tempF != null && heatIndexF > tempF ? ` — Feels like ${heatIndexF}°` : '');
+        $('condWind').textContent = (windMph != null ? windMph : '--') + ' mph';
+        $('condGust').textContent = (gustMph != null ? gustMph : '--') + ' mph';
+        $('condPrecip').textContent = (precipIn != null ? precipIn.toFixed(2) : '0.00') + ' in';
+        $('condHumidity').textContent = (humidity != null ? humidity : '--') + '%';
+
+        $('compassDir').textContent = degToCompass(windDeg);
+        $('compassSpeed').textContent = windMph != null ? windMph : '--';
+        $('compassDeg').textContent = windDeg != null ? Math.round(windDeg) : '--';
+        if (windDeg != null) {
+          $('compassArrow').style.transform = `translate(-50%, -100%) rotate(${windDeg}deg)`;
+        }
+        return true;
+      } catch (err) {
+        console.error('Conditions fetch error:', err);
+        $('condDesc').textContent = 'Conditions unavailable — retrying shortly';
+        return false;
+      }
+    }
+
+    // ---------- NWS: Active alerts for Maricopa County ----------
+    function severityClass(event, severity) {
+      const e = (event || '').toLowerCase();
+      const s = (severity || '').toLowerCase();
+      if (s === 'extreme' || s === 'severe' || e.includes('warning')) return 'severe';
+      if (e.includes('watch')) return 'watch';
+      return 'warning';
+    }
+
+    async function fetchAlerts() {
+      try {
+        const res = await fetch(`https://api.weather.gov/alerts/active?zone=${NWS_ZONE}`, {
+          headers: { 'Accept': 'application/geo+json' }
+        });
+        if (!res.ok) throw new Error('NWS alerts fetch failed: ' + res.status);
+        const data = await res.json();
+        latestAlerts = data.features || [];
+
+        const feed = $('alertsFeed');
+        if (latestAlerts.length === 0) {
+          feed.innerHTML = '<div class="empty-state">No active NWS alerts for Maricopa County</div>';
+        } else {
+          feed.innerHTML = latestAlerts.map(f => {
+            const p = f.properties;
+            const cls = severityClass(p.event, p.severity);
+            const expires = p.expires ? new Date(p.expires).toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Phoenix' }) : 'Unknown';
+            const area = p.areaDesc ? p.areaDesc.split(';').slice(0, 3).join(', ') : 'Maricopa County';
+            return `
+              <div class="alert-item ${cls}">
+                <div class="alert-type">${p.event}</div>
+                <div class="alert-area">${area}</div>
+                <div class="alert-time">Until ${expires} MST</div>
+              </div>`;
+          }).join('');
+        }
+
+        updateRibbon(latestAlerts);
+        return true;
+      } catch (err) {
+        console.error('Alerts fetch error:', err);
+        $('alertsFeed').innerHTML = '<div class="empty-state">Alerts unavailable — retrying shortly</div>';
+        return false;
+      }
+    }
+
+    function updateRibbon(alerts) {
+      const ribbon = $('alertRibbon');
+      if (!alerts.length) { ribbon.hidden = true; return; }
+
+      // Pick the highest-severity alert to headline the ribbon
+      const order = { severe: 3, warning: 2, watch: 1 };
+      const top = alerts.reduce((best, f) => {
+        const cls = severityClass(f.properties.event, f.properties.severity);
+        if (!best || order[cls] > order[severityClass(best.properties.event, best.properties.severity)]) return f;
+        return best;
+      }, null);
+
+      const cls = severityClass(top.properties.event, top.properties.severity);
+      ribbon.className = 'alert-ribbon ' + cls;
+      ribbon.hidden = false;
+      $('ribbonBadge').textContent = top.properties.event;
+      const expires = top.properties.expires ? new Date(top.properties.expires).toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Phoenix' }) : 'further notice';
+      $('ribbonText').textContent = `${top.properties.headline || top.properties.event + ' issued for Maricopa County'} — active until ${expires} MST`;
+    }
+
+    // ---------- Open-Meteo: 7-day forecast ----------
+    async function fetchForecast() {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FPhoenix&forecast_days=7`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Open-Meteo fetch failed: ' + res.status);
+        const data = await res.json();
+        const days = data.daily.time;
+        const strip = $('forecastStrip');
+        strip.innerHTML = days.map((dateStr, i) => {
+          const code = data.daily.weathercode[i];
+          const [icon, label] = WMO[code] || ['&#9728;', '—'];
+          const dayName = new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/Phoenix' });
+          const hi = Math.round(data.daily.temperature_2m_max[i]);
+          const lo = Math.round(data.daily.temperature_2m_min[i]);
+          return `
+            <div class="forecast-day" title="${label}">
+              <div class="day-name">${dayName}</div>
+              <div class="day-icon">${icon}</div>
+              <div class="day-hi">${hi}&deg;</div>
+              <div class="day-lo">${lo}&deg;</div>
+            </div>`;
+        }).join('');
+        return true;
+      } catch (err) {
+        console.error('Forecast fetch error:', err);
+        $('forecastStrip').innerHTML = '<div class="forecast-day">Forecast unavailable</div>';
+        return false;
+      }
+    }
+
+    // ---------- Hail / Rainfall / Wind damage estimator ----------
+    // Heuristic blend of active alert keywords + live wind/precip readings.
+    // This is a derived estimate for field/crew planning — not an official NWS hail/rain product.
+    function updateEstimator() {
+      let hail = 8, rain = 8, wind = 8;
+      const text = latestAlerts.map(f => (f.properties.event || '').toLowerCase()).join(' ');
+
+      if (text.includes('severe thunderstorm')) { hail = Math.max(hail, 60); wind = Math.max(wind, 65); rain = Math.max(rain, 45); }
+      if (text.includes('hail')) hail = Math.max(hail, 85);
+      if (text.includes('flash flood') || text.includes('flood')) rain = Math.max(rain, 75);
+      if (text.includes('dust storm')) wind = Math.max(wind, 60);
+      if (text.includes('high wind')) wind = Math.max(wind, 80);
+      if (text.includes('tornado')) { wind = 100; hail = Math.max(hail, 70); }
+
+      const { gustMph, precipIn } = latestConditions;
+      if (gustMph != null) {
+        if (gustMph > 50) wind = Math.max(wind, 90);
+        else if (gustMph > 35) wind = Math.max(wind, 55);
+        else if (gustMph > 25) wind = Math.max(wind, 30);
+      }
+      if (precipIn != null) {
+        if (precipIn > 0.25) rain = Math.max(rain, 80);
+        else if (precipIn > 0.05) rain = Math.max(rain, 45);
+      }
+
+      const labelFor = (v) => v >= 70 ? 'Extreme' : v >= 50 ? 'High' : v >= 25 ? 'Mod.' : 'Low';
+
+      $('gaugeHail').style.width = hail + '%';
+      $('gaugeRain').style.width = rain + '%';
+      $('gaugeWind').style.width = wind + '%';
+      $('gaugeHailLabel').textContent = labelFor(hail);
+      $('gaugeRainLabel').textContent = labelFor(rain);
+      $('gaugeWindLabel').textContent = labelFor(wind);
+    }
+
+    // ---------- Refresh orchestration ----------
+    async function refreshAlertsAndConditions() {
+      const [alertsOk, condOk] = await Promise.all([fetchAlerts(), fetchConditions()]);
+      updateEstimator();
+      markUpdated(alertsOk && condOk);
+    }
+
+    async function init() {
+      await Promise.all([refreshAlertsAndConditions(), fetchForecast()]);
+      // Alerts + live conditions: poll every 5 minutes
+      setInterval(refreshAlertsAndConditions, 5 * 60 * 1000);
+      // Forecast changes slowly: poll once an hour
+      setInterval(fetchForecast, 60 * 60 * 1000);
+    }
+
+    init();
+  </script>
+
+</body>
+</html>
