@@ -13,6 +13,11 @@ Dark-mode, interactive storm tracking dashboard for the Phoenix Valley, built fo
 - `index.html` — deployment entry point (Vercel/GitHub). Identical to the working build below.
 - `(C) Storm Tracker Dashboard.html` — working build (Step 2/3), kept in sync with `index.html`. Live data, single self-contained file, no build step.
 - `(C) Storm Tracker Dashboard - Wireframe.html` — Step 1 reference. Static layout with placeholder data, kept for design history.
+- `jr-logo.png` — Johnson Roofing logo asset (extracted from the Pricing Calculator build), referenced by both HTML files.
+
+## Post-Step-3 additions (2026-06-30)
+- Added the real Johnson Roofing logo to the header (top-left, white badge for contrast against the dark theme — the logo itself is navy-on-transparent).
+- Added a Storm Risk + CTA banner at the top of the page: shows a live risk level (Low/Moderate/High/Extreme, driven by the same hail/rain/wind estimator) plus two always-visible CTAs — "Schedule Online" (links to johnsonroofingaz.com) and "Call Now: 480-467-4572" (tel: link). Banner color escalates (gold → orange → red) as risk rises.
 
 ## Repo & Deployment
 - GitHub: https://github.com/michaelcsmyth/johnson-roofing-storm-tracker (public)
