@@ -1,8 +1,8 @@
 # Storm Tracker Dashboard #JR
 
-Dark-mode, interactive storm tracking dashboard for the Phoenix Valley, built for Johnson Roofing's website. Free/no-key data sources only (NWS + Open-Meteo + Windy embed).
+Interactive storm tracking dashboard for the Phoenix Valley, built for Johnson Roofing's website. Free/no-key data sources only (NWS + Open-Meteo + Windy embed). Styled to match the live johnsonroofingaz.com brand system (navy/sky-blue/white).
 
-## Status: Completed for now (2026-06-30) — GitHub live, Vercel connect still pending
+## Status: Completed for now (2026-07-30) — GitHub live, Vercel connect still pending
 
 See `(C) Storm Tracker Dashboard - Project Notes.md` for full project notes, decisions, and to-dos.
 
@@ -18,8 +18,15 @@ See `(C) Storm Tracker Dashboard - Project Notes.md` for full project notes, dec
 - `jr-logo.png` — Johnson Roofing logo asset (extracted from the Pricing Calculator build), referenced by both HTML files.
 
 ## Post-Step-3 additions (2026-06-30)
-- Added the real Johnson Roofing logo to the header (top-left, white badge for contrast against the dark theme — the logo itself is navy-on-transparent).
-- Added a Storm Risk + CTA banner at the top of the page: shows a live risk level (Low/Moderate/High/Extreme, driven by the same hail/rain/wind estimator) plus two always-visible CTAs — "Schedule Online" (links to johnsonroofingaz.com) and "Call Now: 480-467-4572" (tel: link). Banner color escalates (gold → orange → red) as risk rises.
+- Added the real Johnson Roofing logo to the header.
+- Added a Storm Risk + CTA banner at the top of the page: shows a live risk level (Low/Moderate/High/Extreme, driven by the same hail/rain/wind estimator) plus two always-visible CTAs — "Schedule Online" (links to johnsonroofingaz.com) and "Call Now: 480-467-4572" (tel: link).
+
+## Re-theme (2026-07-30)
+Rebuilt the look and feel to match the actual live johnsonroofingaz.com site instead of the original dark-mode/gold theme:
+- Light page background (`#f5f8fb`), white cards, navy `#0d3b66` bold uppercase Oswald headlines, sky-blue `#29abe2` accent for CTAs/links/stats.
+- Logo now sits directly on the white header (no badge needed).
+- Storm Risk + CTA banner restyled as a solid sky-blue band with the site's white/navy two-button pattern, still escalating to orange/red with rising storm risk.
+- Added a trust-badge row to the footer (ROC #272325, BBB A+ Accredited, Licensed & Insured), matching the real site's contact panel.
 
 ## Repo & Deployment
 - GitHub: https://github.com/michaelcsmyth/johnson-roofing-storm-tracker (public)
@@ -32,4 +39,4 @@ See `(C) Storm Tracker Dashboard - Project Notes.md` for full project notes, dec
 - Windy Radar: free embed iframe, centered on Phoenix
 
 ## Design Reference
-Palette/style pulled from the Insurance Navigator Page build (`05 Marketing & Ads/Website Redesign/Insurance Navigator Page/`) — navy `#0d1b2a` + gold `#c8973a`, Oswald/Inter fonts. Storm-specific accents added: amber `#ffb300` (watch), orange `#ff6b35` (warning), red `#e63946` (severe).
+Palette/style matches the live johnsonroofingaz.com site — navy `#0d3b66`, sky-blue `#29abe2`, white cards on a light `#f5f8fb` background, bold uppercase Oswald headlines, Inter body text. Storm-specific accents: amber `#f5a623` (watch), orange `#ff6b35` (warning), red `#e63946` (severe) — with darker text-safe variants for AA contrast on white.

@@ -8,47 +8,50 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* Brand base — matches Insurance Navigator / Financing Page navy+gold system */
-    --navy:         #0d1b2a;
-    --navy-dark:    #0a141f;
-    --panel:        #131c28;
-    --panel-light:  #1a2433;
-    --border:       #2a3545;
-    --gold:         #c8973a;
-    --gold-hover:   #b07d28;
+    /* Brand base — matches johnsonroofingaz.com (navy / sky-blue / white) */
+    --navy:         #0d3b66;
+    --navy-dark:    #092c4d;
+    --sky:          #29abe2;
+    --sky-dark:     #1c8ec4;
     --white:        #ffffff;
-    --text-muted:   #8a9aaa;
-    --text-dim:     #5c6b7d;
+    --bg-page:      #f5f8fb;
+    --bg-card:      #ffffff;
+    --border:       #e1e8ef;
+    --border-strong: #c9d6e2;
+    --text:         #14283c;
+    --text-muted:   #5b6b7c;
+    --text-dim:     #97a4b2;
 
-    /* Storm severity accents */
-    --amber:        #ffb300;  /* watch */
-    --orange:       #ff6b35;  /* warning */
-    --red:          #e63946;  /* severe / extreme */
-    --green:        #27ae60;  /* all-clear */
+    /* Storm severity accents (fills/borders — brighter) */
+    --amber:        #f5a623;
+    --orange:       #ff6b35;
+    --red:          #e63946;
+    --green:        #27ae60;
+    /* Text-safe variants (darker, for AA contrast on white) */
+    --amber-text:   #b8790a;
+    --orange-text:  #cc4a1c;
+    --red-text:     #c4232f;
 
     --font-display: 'Oswald', sans-serif;
     --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
     --radius-sm:    8px;
-    --radius-md:    14px;
-    --radius-lg:    20px;
-    --shadow-md:    0 8px 24px rgba(0,0,0,0.35);
+    --radius-md:    12px;
+    --radius-lg:    16px;
+    --shadow-sm:    0 2px 8px rgba(20,40,60,0.06);
+    --shadow-md:    0 8px 24px rgba(20,40,60,0.10);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--navy);
-    color: var(--white);
+    background: var(--bg-page);
+    color: var(--text);
     font-family: var(--font-body);
     min-height: 100vh;
-    background-image:
-      radial-gradient(circle at 15% 0%, rgba(200,151,58,0.07) 0%, transparent 40%),
-      radial-gradient(circle at 85% 10%, rgba(230,57,70,0.05) 0%, transparent 45%);
-    background-attachment: fixed;
   }
 
-  a { color: var(--gold); text-decoration: none; }
+  a { color: var(--sky); text-decoration: none; }
 
   /* ===== HEADER ===== */
   header {
@@ -56,28 +59,24 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 32px;
-    background: var(--panel);
+    background: var(--white);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
     z-index: 100;
   }
   .header-brand { display: flex; align-items: center; gap: 14px; }
-  .header-brand .logo-mark {
-    height: 44px;
-    background: var(--white);
-    border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center;
-    padding: 6px 12px;
-  }
+  .header-brand .logo-mark { height: 44px; display: flex; align-items: center; }
   .header-brand .logo-mark img { height: 100%; width: auto; display: block; }
   .header-brand h1 {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 19px;
     letter-spacing: 0.3px;
+    color: var(--navy);
+    text-transform: uppercase;
   }
-  .header-brand h1 span { color: var(--gold); }
+  .header-brand h1 span { color: var(--sky); }
   .header-brand .subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
   .header-status { display: flex; align-items: center; gap: 24px; }
@@ -101,7 +100,7 @@
 
   /* ===== ALERT RIBBON ===== */
   .alert-ribbon {
-    background: linear-gradient(90deg, var(--red), #c0392b);
+    background: var(--red);
     color: var(--white);
     padding: 12px 32px;
     display: flex;
@@ -111,14 +110,14 @@
     font-weight: 500;
     font-size: 14px;
     letter-spacing: 0.3px;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
   }
-  .alert-ribbon.watch { background: linear-gradient(90deg, var(--amber), #c98700); color: var(--navy); }
+  .alert-ribbon.watch { background: var(--amber); color: var(--navy); }
   .alert-ribbon.watch .badge { color: var(--navy); }
-  .alert-ribbon.warning { background: linear-gradient(90deg, var(--orange), #cc4e1f); }
+  .alert-ribbon.warning { background: var(--orange); }
   .alert-ribbon[hidden] { display: none; }
   .alert-ribbon .badge {
-    background: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.22);
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 11px;
@@ -143,34 +142,35 @@
 
   /* ===== STORM RISK + CTA BANNER ===== */
   .cta-banner {
+    background: var(--sky);
+    color: var(--white);
+    border-radius: var(--radius-md);
+    padding: 26px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
-    border-left: 4px solid var(--gold);
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-md);
+    transition: background 0.4s ease;
   }
-  .cta-banner.risk-mod { border-left-color: var(--orange); }
+  .cta-banner.risk-mod { background: var(--orange); }
   .cta-banner.risk-high,
-  .cta-banner.risk-extreme {
-    border-left-color: var(--red);
-    background: linear-gradient(90deg, rgba(230,57,70,0.10), var(--panel) 60%);
-  }
+  .cta-banner.risk-extreme { background: var(--red); }
   .cta-risk-label {
     font-family: var(--font-display);
     font-size: 12px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--text-muted);
+    letter-spacing: 0.8px;
+    color: rgba(255,255,255,0.85);
     margin-bottom: 8px;
   }
-  .cta-risk-label span { color: var(--gold); font-weight: 600; }
-  .cta-banner.risk-mod .cta-risk-label span { color: var(--orange); }
-  .cta-banner.risk-high .cta-risk-label span,
-  .cta-banner.risk-extreme .cta-risk-label span { color: var(--red); }
+  .cta-risk-label span { color: var(--white); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
   .cta-message {
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 600;
     color: var(--white);
     max-width: 520px;
     line-height: 1.5;
@@ -179,10 +179,10 @@
   .cta-btn {
     font-family: var(--font-display);
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.4px;
-    padding: 13px 24px;
+    padding: 14px 26px;
     border-radius: var(--radius-sm);
     white-space: nowrap;
     display: inline-flex;
@@ -190,10 +190,10 @@
     gap: 8px;
     transition: transform 0.15s ease, background 0.15s ease;
   }
-  .cta-btn-primary { background: var(--gold); color: var(--navy); }
-  .cta-btn-primary:hover { background: var(--gold-hover); transform: translateY(-2px); }
-  .cta-btn-secondary { background: transparent; color: var(--white); border: 1px solid var(--border); }
-  .cta-btn-secondary:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+  .cta-btn-primary { background: var(--white); color: var(--navy); }
+  .cta-btn-primary:hover { background: #eef4f9; transform: translateY(-2px); }
+  .cta-btn-secondary { background: var(--navy); color: var(--white); border: 1px solid var(--navy); }
+  .cta-btn-secondary:hover { background: var(--navy-dark); transform: translateY(-2px); }
 
   .grid-3col {
     display: grid;
@@ -209,11 +209,11 @@
   }
 
   .card {
-    background: var(--panel);
+    background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 22px;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
   }
 
   .card-header {
@@ -225,10 +225,10 @@
   .card-header h2 {
     font-family: var(--font-display);
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    color: var(--white);
+    color: var(--navy);
   }
   .card-header .source-tag {
     font-size: 10px;
@@ -247,8 +247,8 @@
   .condition-primary .temp {
     font-family: var(--font-display);
     font-size: 56px;
-    font-weight: 600;
-    color: var(--gold);
+    font-weight: 700;
+    color: var(--sky);
     line-height: 1;
   }
   .condition-primary .desc { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
@@ -258,10 +258,10 @@
     grid-template-columns: 1fr 1fr;
     gap: 14px;
   }
-  .stat-block { background: var(--panel-light); border-radius: var(--radius-sm); padding: 12px; }
+  .stat-block { background: var(--bg-page); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
   .stat-block .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); }
-  .stat-block .value { font-family: var(--font-display); font-size: 20px; font-weight: 500; margin-top: 4px; }
-  .stat-block .value.wind-gust { color: var(--orange); }
+  .stat-block .value { font-family: var(--font-display); font-size: 20px; font-weight: 600; margin-top: 4px; color: var(--text); }
+  .stat-block .value.wind-gust { color: var(--orange-text); }
 
   .wind-compass {
     margin-top: 16px;
@@ -269,22 +269,24 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    background: var(--panel-light);
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 16px;
   }
   .compass-ring {
     width: 70px; height: 70px;
-    border: 2px solid var(--border);
+    border: 2px solid var(--border-strong);
     border-radius: 50%;
     position: relative;
     flex-shrink: 0;
+    background: var(--white);
   }
   .compass-arrow {
     position: absolute;
     top: 50%; left: 50%;
     width: 2px; height: 28px;
-    background: var(--gold);
+    background: var(--sky);
     transform-origin: bottom center;
     transform: translate(-50%, -100%) rotate(0deg);
     transition: transform 0.4s ease;
@@ -296,11 +298,11 @@
     width: 0; height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-bottom: 7px solid var(--gold);
+    border-bottom: 7px solid var(--sky);
     transform: translateX(-50%);
   }
   .compass-labels { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
-  .compass-labels strong { color: var(--white); font-family: var(--font-display); }
+  .compass-labels strong { color: var(--navy); font-family: var(--font-display); }
 
   /* ===== RADAR/MAP CARD ===== */
   .radar-frame {
@@ -309,7 +311,7 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     border: 1px solid var(--border);
-    background: var(--panel-light);
+    background: var(--bg-page);
   }
   .radar-frame iframe { width: 100%; height: 100%; border: 0; }
 
@@ -333,7 +335,8 @@
     overflow-y: auto;
   }
   .alert-item {
-    background: var(--panel-light);
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-left: 3px solid var(--amber);
     border-radius: var(--radius-sm);
     padding: 12px 14px;
@@ -343,13 +346,13 @@
   .alert-item .alert-type {
     font-family: var(--font-display);
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
-  .alert-item.watch .alert-type { color: var(--amber); }
-  .alert-item.warning .alert-type { color: var(--orange); }
-  .alert-item.severe .alert-type { color: var(--red); }
+  .alert-item.watch .alert-type { color: var(--amber-text); }
+  .alert-item.warning .alert-type { color: var(--orange-text); }
+  .alert-item.severe .alert-type { color: var(--red-text); }
   .alert-item .alert-area { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
   .alert-item .alert-time { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
   .alerts-feed .empty-state {
@@ -367,7 +370,8 @@
   .gauge-track {
     flex: 1;
     height: 10px;
-    background: var(--panel-light);
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-radius: 6px;
     overflow: hidden;
     position: relative;
@@ -379,7 +383,7 @@
     width: 0%;
     transition: width 0.6s ease;
   }
-  .gauge-value { width: 60px; text-align: right; font-family: var(--font-display); font-size: 14px; color: var(--white); flex-shrink: 0; }
+  .gauge-value { width: 60px; text-align: right; font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--text); flex-shrink: 0; }
 
   /* ===== FORECAST STRIP ===== */
   .forecast-strip {
@@ -388,20 +392,27 @@
     gap: 10px;
   }
   .forecast-day {
-    background: var(--panel-light);
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 12px 8px;
     text-align: center;
   }
-  .forecast-day .day-name { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+  .forecast-day .day-name { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
   .forecast-day .day-icon { font-size: 20px; margin: 8px 0; }
-  .forecast-day .day-hi { font-family: var(--font-display); font-size: 15px; color: var(--white); }
-  .forecast-day .day-lo { font-size: 12px; color: var(--text-dim); }
+  .forecast-day .day-hi { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--navy); }
+  .forecast-day .day-lo { font-size: 12px; color: var(--text-muted); }
 
   /* ===== FOOTER ===== */
   footer {
     border-top: 1px solid var(--border);
+    background: var(--white);
     padding: 20px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .footer-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -410,8 +421,19 @@
     flex-wrap: wrap;
     gap: 10px;
   }
-  footer .footer-sources span { margin-right: 16px; }
-  footer .footer-contact a { color: var(--gold); }
+  .footer-sources span { margin-right: 16px; }
+  .footer-contact a { color: var(--sky); font-weight: 600; }
+  .trust-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .trust-badge {
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--navy);
+    background: var(--white);
+    white-space: nowrap;
+  }
 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 1100px) {
@@ -428,6 +450,7 @@
     .cta-banner { flex-direction: column; align-items: flex-start; }
     .cta-actions { width: 100%; }
     .cta-btn { flex: 1; justify-content: center; }
+    .footer-top { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -460,7 +483,7 @@
   <main>
 
     <!-- Storm Risk + CTA: text/color updated by JS based on the hail/rain/wind estimator below -->
-    <div class="card cta-banner" id="ctaBanner">
+    <div class="cta-banner" id="ctaBanner">
       <div class="cta-text">
         <div class="cta-risk-label">Storm Risk — Phoenix Valley: <span id="ctaRiskValue">Low</span></div>
         <div class="cta-message" id="ctaMessage">Stay ahead of the next storm — schedule a free roof inspection before severe weather hits.</div>
@@ -589,13 +612,20 @@
   </main>
 
   <footer>
-    <div class="footer-sources">
-      <span>Data: National Weather Service (NWS)</span>
-      <span>Open-Meteo</span>
-      <span>Windy Radar</span>
+    <div class="footer-top">
+      <div class="footer-sources">
+        <span>Data: National Weather Service (NWS)</span>
+        <span>Open-Meteo</span>
+        <span>Windy Radar</span>
+      </div>
+      <div class="footer-contact">
+        Johnson Roofing &bull; 480-467-4572 &bull; <a href="https://johnsonroofingaz.com">johnsonroofingaz.com</a>
+      </div>
     </div>
-    <div class="footer-contact">
-      Johnson Roofing &bull; 480-467-4572 &bull; <a href="https://johnsonroofingaz.com">johnsonroofingaz.com</a>
+    <div class="trust-badges">
+      <span class="trust-badge">ROC #272325</span>
+      <span class="trust-badge">BBB A+ Accredited</span>
+      <span class="trust-badge">Licensed &amp; Insured</span>
     </div>
   </footer>
 
@@ -861,7 +891,7 @@
         msg = 'Conditions could turn — now is a good time to get ahead of it with a free roof inspection.';
       }
 
-      banner.className = 'card cta-banner' + (cls ? ' ' + cls : '');
+      banner.className = 'cta-banner' + (cls ? ' ' + cls : '');
       $('ctaRiskValue').textContent = label;
       $('ctaMessage').textContent = msg;
     }

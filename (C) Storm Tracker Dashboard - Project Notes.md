@@ -1,7 +1,7 @@
 # Storm Tracker Dashboard — Project Notes
 #JR
 
-**Created:** 2026-06-30
+**Created:** 2026-06-30 · **Updated:** 2026-07-30
 **Status:** Completed (for now) — live on GitHub, one manual Vercel connect step remains
 
 ---
@@ -42,11 +42,16 @@ Auto-refresh: alerts + conditions every 5 min, forecast hourly. Every fetch fail
 
 ## Design Decisions
 
-- Palette pulled from the existing Insurance Navigator Page brand system (navy `#0d1b2a` + gold `#c8973a`, Oswald/Inter fonts), extended with amber/orange/red storm-severity accents so the page reads calm on a clear day and urgent during an active storm.
 - Built process was staged and checked in at each phase rather than delivered all at once: Layout/Wireframe → API Integration → Deployment → branding/CTA polish.
 - Plain HTML/CSS/JS, single `index.html`, zero build step — matches the pattern of the Pricing Calculator and Insurance Navigator builds, and deploys to Vercel with no config.
-- Logo placed in a white badge rather than directly on the dark header background, since the source logo file is navy-on-transparent and would otherwise disappear into the dark theme.
 - CTA banner risk level is driven by the same hail/rain/wind estimator as the gauges below it, so the messaging and color always match what the rest of the page is showing — no separate logic to keep in sync.
+
+**Re-theme (2026-07-30):** Originally built dark-mode (navy `#0d1b2a` + gold `#c8973a`, matching the Insurance Navigator page). Michael flagged it didn't match the actual live johnsonroofingaz.com site — light background, navy `#0d3b66` headlines, bright sky-blue `#29abe2` accent for CTAs/links, bold uppercase Oswald headlines, white card sections. Rebuilt to match:
+- Page background light gray-blue (`#f5f8fb`), white cards with subtle borders/shadows — same visual language as the "Complete Roofing Services" card section on the live site.
+- Logo now sits directly on the white header (no badge needed — the source PNG is navy-on-transparent, which only needed contrast help against a dark background).
+- Storm Risk + CTA banner restyled as a solid sky-blue band with a white/navy two-button pattern (white bg + navy text primary, navy bg + white text secondary) — matches the "NEED A ROOF REPAIR OR REPLACEMENT?" CTA bar already used on the real site. Band color still escalates orange/red with rising storm risk.
+- Added a trust-badge row to the footer (ROC #272325, BBB A+ Accredited, Licensed & Insured) pulled directly from the real site's contact panel, for brand consistency.
+- Storm-severity colors (amber/orange/red) kept for alerts/gauges, with separate darker text-safe variants added so alert labels stay readable (AA contrast) on the new white card backgrounds.
 
 ---
 
